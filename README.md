@@ -53,5 +53,5 @@ A professional and user-friendly web application to help students share and expl
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/interview-experience-hub.git
-cd interview-experience-hub
+git clone https://github.com/yash5800/cq.git
+cd cq
