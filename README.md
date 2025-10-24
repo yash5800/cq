@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Student Interview Experience Hub
+
+A professional and user-friendly web application to help students share and explore past interview experiences at various companies. This platform allows students to contribute their experiences, including questions asked, technologies, selection rounds, LPA, and more, making it easier for newcomers to prepare and understand the interview process.
+
+---
+
+## Features
+
+- **User Submission:** Students can submit their past interview experiences with details like:
+  - Company name
+  - Questions asked
+  - Programming languages used
+  - Interview rounds
+  - LPA received
+  - Interviewer expectations
+  - Additional comments and tips
+- **Home Page:** Displays a list of companies with overall positive feedback summary.
+- **Company Details:** View detailed experiences for each company including rounds, questions, and tips.
+- **Professional & User-Friendly UI:** Easy navigation and visually appealing interface to encourage contributions and exploration.
+- **Data Driven:** Aggregates experiences to give insights into company interview patterns.
+
+---
+
+## Pages
+
+1. **Home**  
+   - Overview of all companies.  
+   - Display company name and overall positive feedback.
+
+2. **Posting**  
+   - Form for students to submit their interview experiences.  
+   - Input validation to ensure high-quality contributions.
+
+3. **Overall View (Company Details)**  
+   - Detailed page for each company.  
+   - Shows all shared experiences, selection rounds, questions, and tips.  
+   - Aggregated insights for newcomers.
+
+---
+
+## Tech Stack (Suggested)
+
+- **Frontend:** React.js / Next.js  
+- **Backend:** Node.js / Express.js  
+- **Database:** MongoDB (to store experiences)  
+- **Styling:** TailwindCSS / NativeWind for modern and responsive UI  
+- **Optional:** Authentication (Google Auth / Auth.js) for verified submissions
+
+---
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+git clone https://github.com/your-username/interview-experience-hub.git
+cd interview-experience-hub
