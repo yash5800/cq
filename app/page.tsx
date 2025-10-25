@@ -47,6 +47,11 @@ function CompanyCardSkeleton() {
   )
 }
 
+// new name
+// cards must be different from overview
+// rupess symbol
+
+
 export default function Home() {
   const [companies, setCompanies] = useState<CompanyCard[]>([])
   const [loading, setLoading] = useState(true)

@@ -22,6 +22,11 @@ interface Experience {
   timestamp: string
 }
 
+
+// Languages not displaying properly
+// Typical Interview Rounds need to change
+// reduce padding
+
 function ExperienceSkeleton() {
   return (
     <Card className="border-slate-200 animate-pulse">

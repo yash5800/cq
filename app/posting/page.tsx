@@ -10,17 +10,21 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ArrowLeft, Plus, X } from "lucide-react"
+import { set } from "date-fns"
+import { el } from "date-fns/locale"
 
 interface FormData {
   company_name: string
-  questions_asked: string
   languages_used: string
   interview_questions: string
   selection_rounds: string
   lpa: string
-  interviewer_expectations: string
   other_details: string
   feedback_rating: "positive" | "negative" | "neutral"
+}
+
+function capitalizeFirstLetter(string : String) {
+   return string.charAt(0).toUpperCase() + string.slice(1); 
 }
 
 export default function PostingPage() {
@@ -30,12 +34,10 @@ export default function PostingPage() {
   const [newCompanyName, setNewCompanyName] = useState("")
   const [formData, setFormData] = useState<FormData>({
     company_name: "",
-    questions_asked: "",
     languages_used: "",
     interview_questions: "",
     selection_rounds: "",
     lpa: "",
-    interviewer_expectations: "",
     other_details: "",
     feedback_rating: "neutral",
   })
@@ -74,6 +76,15 @@ export default function PostingPage() {
     }))
   }
 
+  const handleLanguagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target
+    const languages = value.split(",").map((lang) => capitalizeFirstLetter(lang.trim()))
+    setFormData((prev) => ({
+      ...prev,
+      languages_used: languages.join(", "),
+    }))
+  }
+
   const handleSelectCompany = (company: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -90,6 +101,7 @@ export default function PostingPage() {
         company_name: newCompanyName.trim(),
       }))
       setShowNewCompany(false)
+      setExistingCompanies((prev) => Array.from(new Set([...prev, newCompanyName.trim()])).sort())
       setNewCompanyName("")
     }
   }
@@ -100,6 +112,15 @@ export default function PostingPage() {
 
     if (!formData.company_name.trim()) {
       setError("Company name is required")
+      return
+    } else if (!formData.interview_questions.trim()) {
+      setError("Please provide the interview questions asked")
+      return
+    } else if (!formData.languages_used.trim()) {
+      setError("Please provide the languages used")
+      return
+    } else if (!formData.feedback_rating.trim()) {
+      setError("Please provide your overall experience feedback")
       return
     }
 
@@ -243,12 +264,12 @@ export default function PostingPage() {
 
               {/* Languages Used */}
               <div>
-                <label className="block text-sm font-medium text-slate-900 mb-2">Languages Used</label>
+                <label className="block text-sm font-medium text-slate-900 mb-2">Languages Used *</label>
                 <Input
                   type="text"
                   name="languages_used"
                   value={formData.languages_used}
-                  onChange={handleChange}
+                  onChange={handleLanguagesChange}
                   placeholder="e.g., Java, Python, C++"
                   className="border-slate-300"
                 />
@@ -256,39 +277,13 @@ export default function PostingPage() {
 
               {/* Interview Questions */}
               <div>
-                <label className="block text-sm font-medium text-slate-900 mb-2">Interview Questions Asked</label>
+                <label className="block text-sm font-medium text-slate-900 mb-2">Interview Questions Asked *</label>
                 <Textarea
                   name="interview_questions"
                   value={formData.interview_questions}
                   onChange={handleChange}
                   placeholder="List the questions you were asked during the interview"
                   rows={4}
-                  className="border-slate-300"
-                />
-              </div>
-
-              {/* Questions Asked */}
-              <div>
-                <label className="block text-sm font-medium text-slate-900 mb-2">Questions You Asked</label>
-                <Textarea
-                  name="questions_asked"
-                  value={formData.questions_asked}
-                  onChange={handleChange}
-                  placeholder="What questions did you ask the interviewer?"
-                  rows={3}
-                  className="border-slate-300"
-                />
-              </div>
-
-              {/* Interviewer Expectations */}
-              <div>
-                <label className="block text-sm font-medium text-slate-900 mb-2">What Interviewer Expected</label>
-                <Textarea
-                  name="interviewer_expectations"
-                  value={formData.interviewer_expectations}
-                  onChange={handleChange}
-                  placeholder="What skills or knowledge did the interviewer seem to be looking for?"
-                  rows={3}
                   className="border-slate-300"
                 />
               </div>
@@ -301,14 +296,14 @@ export default function PostingPage() {
                   name="lpa"
                   value={formData.lpa}
                   onChange={handleChange}
-                  placeholder="e.g., 12 LPA, 15-20 LPA"
+                  placeholder="e.g., 4 LPA, 12-20 LPA"
                   className="border-slate-300"
                 />
               </div>
 
               {/* Feedback Rating */}
               <div>
-                <label className="block text-sm font-medium text-slate-900 mb-2">Overall Experience</label>
+                <label className="block text-sm font-medium text-slate-900 mb-2">Overall Experience *</label>
                 <select
                   name="feedback_rating"
                   value={formData.feedback_rating}
