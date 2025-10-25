@@ -5,7 +5,8 @@ import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { TrendingUp, Users, Award, Zap, Calendar, DollarSign, CheckCircle } from "lucide-react"
+import { TrendingUp, SquareArrowOutUpRight , Users, Award, Zap, Calendar, IndianRupee, CheckCircle } from "lucide-react"
+import { add } from "date-fns"
 
 interface Experience {
   _id: string
@@ -48,8 +49,6 @@ function CompanyCardSkeleton() {
 }
 
 // new name
-// cards must be different from overview
-// rupess symbol
 
 
 export default function Home() {
@@ -57,8 +56,10 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [totalStats, setTotalStats] = useState({ total_experiences: 0, total_companies: 0, avg_success_rate: 0 })
+  const [viewMoreHover, setViewMoreHover] = useState<boolean>(false)
 
   useEffect(() => {
+
     const fetchExperiences = async () => {
       try {
         setLoading(true)
@@ -268,10 +269,14 @@ export default function Home() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {companies.map((company) => (
-                <Link key={company.name} href={`/company/${encodeURIComponent(company.name)}`}>
-                  <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer border-slate-200 hover:border-blue-300">
+                <Link key={company.name} href={`/company/${encodeURIComponent(company.name)}`} title="View More" className="company ">
+                  <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer border-slate-200 hover:border-blue-300 overflow-hidden relative">
+                    <div className="absolute flex top-0 -left-2 opacity-0 items-center gap-2 justify-center bg-green-200 rounded-br-2xl px-3 py-2 view transition-opacity duration-300">
+                      <SquareArrowOutUpRight className="w-5 h-5 text-green-500" />
+                      <p className="text-sm text-green-500">view  more</p>
+                    </div>
                     <CardHeader>
-                      <div className="flex items-start justify-between">
+                      <div className="flex items-start justify-between mt-2.5">
                         <div className="flex-1">
                           <CardTitle className="text-xl text-slate-900">{company.name}</CardTitle>
                           <CardDescription className="mt-1">
@@ -295,11 +300,11 @@ export default function Home() {
                       {/* Key Stats */}
                       <div className="grid grid-cols-2 gap-4">
                         <div className="flex items-start gap-2">
-                          <DollarSign className="w-4 h-4 text-slate-600 mt-1 flex-shrink-0" />
+                          <IndianRupee className="w-4 h-4 text-slate-600 mt-1 flex-shrink-0" />
                           <div>
                             <p className="text-xs text-slate-600">Avg LPA</p>
                             <p className="text-sm font-semibold text-slate-900">
-                              {company.average_lpa === "N/A" ? "N/A" : `₹${company.average_lpa}L`}
+                              {company.average_lpa === "N/A" ? "N/A" : `${company.average_lpa}L`}
                             </p>
                           </div>
                         </div>

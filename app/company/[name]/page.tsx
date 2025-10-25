@@ -6,17 +6,15 @@ import { useParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, ThumbsUp, ThumbsDown, TrendingUp, Code2, Zap } from "lucide-react"
+import { ArrowLeft, Eye , ThumbsUp, ThumbsDown, TrendingUp, Code2, Zap } from "lucide-react"
 
 interface Experience {
   _id: string
   company_name: string
-  questions_asked: string
   languages_used: string
   interview_questions: string
   selection_rounds: string
   lpa: string
-  interviewer_expectations: string
   other_details: string
   feedback_rating: "positive" | "negative" | "neutral"
   timestamp: string
@@ -118,7 +116,6 @@ export default function CompanyDetailPage() {
     })
     return Object.entries(questionCount)
       .sort((a, b) => b[1] - a[1])
-      .slice(0, 5)
   }
 
   const getLpaRange = () => {
@@ -451,9 +448,9 @@ export default function CompanyDetailPage() {
                           </CardDescription>
                         </div>
                         {exp.lpa && (
-                          <div className="text-right">
-                            <p className="text-sm text-slate-600">LPA</p>
+                          <div className="flex gap-1 items-center">
                             <p className="text-lg font-bold text-slate-900">{exp.lpa}</p>
+                            <p className="text-sm text-slate-600">LPA</p>
                           </div>
                         )}
                       </div>
@@ -477,20 +474,6 @@ export default function CompanyDetailPage() {
                         <div>
                           <h3 className="font-semibold text-slate-900 mb-2">Interview Questions</h3>
                           <p className="text-slate-700 whitespace-pre-wrap">{exp.interview_questions}</p>
-                        </div>
-                      )}
-
-                      {exp.questions_asked && (
-                        <div>
-                          <h3 className="font-semibold text-slate-900 mb-2">Questions Asked by Student</h3>
-                          <p className="text-slate-700 whitespace-pre-wrap">{exp.questions_asked}</p>
-                        </div>
-                      )}
-
-                      {exp.interviewer_expectations && (
-                        <div>
-                          <h3 className="font-semibold text-slate-900 mb-2">What Interviewer Expected</h3>
-                          <p className="text-slate-700 whitespace-pre-wrap">{exp.interviewer_expectations}</p>
                         </div>
                       )}
 

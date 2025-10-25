@@ -123,3 +123,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+.company:hover .view {
+  @apply opacity-100 ;
+}
+
+
