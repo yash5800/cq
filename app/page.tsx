@@ -9,12 +9,13 @@ import { TrendingUp, SquareArrowOutUpRight , Users, Award, Zap, Calendar, Indian
 import { add } from "date-fns"
 import Footer from "@/components/footer"
 import { getSessionId } from "@/lib/utils"
+import Navbar from "@/components/navbar"
 
 interface Experience {
   _id: string
   company_name: string
   lpa: string
-  feedback_rating: "positive" | "negative" | "neutral"
+  feedback_rating: "easy" | "medium" | "hard"
   selection_rounds: string
   timestamp: string | number
   languages_used: string
@@ -23,11 +24,11 @@ interface Experience {
 interface CompanyCard {
   name: string
   total_experiences: number
-  positive_feedback: number
+  feedback: number
   average_lpa: string
   latest_experience: Experience
   success_rate: number
-  most_used_languages: string[]
+  languages_used: string[]
   latest_date: string
 }
 
@@ -115,7 +116,7 @@ export default function Home() {
         })
 
         const stats: CompanyCard[] = Array.from(companyMap.entries()).map(([name, exps]) => {
-          const positive = exps.filter((e) => e.feedback_rating === "positive").length
+          const positive = exps.filter((e) => e.feedback_rating === "easy").length
           const lpaValues = exps
             .map((e) => {
               const match = e.lpa.match(/\d+/)
@@ -149,11 +150,11 @@ export default function Home() {
           return {
             name,
             total_experiences: exps.length,
-            positive_feedback: positive,
+            feedback: positive,
             average_lpa: avgLpa,
             latest_experience: latestExp,
             success_rate,
-            most_used_languages: mostUsedLanguages,
+            languages_used: mostUsedLanguages,
             latest_date: new Date(
               typeof latestExp.timestamp === "string" ? latestExp.timestamp : latestExp.timestamp,
             ).toLocaleDateString(),
@@ -185,19 +186,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 top-0 z-50 ">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between max-[600px]:flex-col gap-4">
-            <div className="max-[600px]:text-center ">
-              <h1 className="text-3xl font-bold text-slate-900">InterviewHub</h1>
-              <p className="text-slate-600 mt-1">Learn from real student interview experiences</p>
-            </div>
-            <Link href="/posting">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white">Share Your Experience</Button>
-            </Link>
-          </div>
-        </div>
-      </div>
+      <Navbar />
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -357,20 +346,20 @@ export default function Home() {
                         <div className="flex items-start gap-2">
                           <CheckCircle className="w-4 h-4 text-green-600 mt-1 flex-shrink-0" />
                           <div>
-                            <p className="text-xs text-slate-600">Positive</p>
+                            <p className="text-xs text-slate-600">Easy</p>
                             <p className="text-sm font-semibold text-green-600">
-                              {company.positive_feedback}/{company.total_experiences}
+                              {company.feedback}/{company.total_experiences}
                             </p>
                           </div>
                         </div>
                       </div>
 
                       {/* Languages */}
-                      {company.most_used_languages.length > 0 && (
+                      {company.languages_used.length > 0 && (
                         <div className="pt-2 border-t border-slate-200">
                           <p className="text-xs text-slate-600 mb-2">Top Languages</p>
                           <div className="flex flex-wrap gap-2">
-                            {company.most_used_languages.map((lang) => (
+                            {company.languages_used.map((lang) => (
                               <Badge
                                 key={lang}
                                 variant="outline"

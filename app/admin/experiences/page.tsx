@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { Trash2, ArrowLeft, Loader2 } from "lucide-react"
+import { Trash2, ArrowLeft, Loader2, IndianRupee, CheckCircle, Calendar } from "lucide-react"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,6 +17,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { toast } from "react-toastify"
+import Bin from "@/components/bin"
 
 interface Experience {
   _id: string
@@ -30,25 +31,60 @@ interface Experience {
 }
 
 export default function ManageExperiences() {
-  const [experiences, setExperiences] = useState<Experience[]>([])
+  const [companies, setCompanies] = useState<string[]>([])
+  const [experiences, setExperiences] = useState<any[]>([])
+  const [selectedCompanyExperiences, setSelectedCompanyExperiences] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState<string | null>(null)
+  const [selectedCompany, setSelectedCompany] = useState<string>("")
 
   useEffect(() => {
-    fetchExperiences()
+      const fetchData = async () => {
+        try {
+          setLoading(true)
+          const [companiesRes, experiencesRes] = await Promise.all([
+            fetch("/api/admin/companies"),
+            fetch("/api/admin/experiences"),
+          ])
+
+          const companiesList = await companiesRes.json()
+          const experiencesList = await experiencesRes.json()
+          const clean_experiencesList = experiencesList.map((exp: any) => ({
+            ...exp,
+            languages_used: exp.languages_used.split(",").map((lang: string) => lang.trim()),
+          }))
+          setExperiences(clean_experiencesList)
+
+          console.log("clean_experiencesList:", clean_experiencesList);
+
+          const companyData = companiesList;
+
+          setCompanies(companyData)
+          setSelectedCompany(companyData[0] || "")
+          const filteredExperiences = clean_experiencesList.filter((e: any) => e.company_name === companyData[0])
+
+          setSelectedCompanyExperiences(filteredExperiences)
+
+        } catch (error) {
+          console.error("Failed to fetch companies:", error)
+        } finally {
+          setLoading(false)
+        }
+      }
+
+      fetchData().finally(() => 
+        {
+          setLoading(false)
+        })
   }, [])
 
-  const fetchExperiences = async () => {
-    try {
-      setLoading(true)
-      const response = await fetch("/api/admin/experiences")
-      const data = await response.json()
-      setExperiences(data)
-    } catch (error) {
-      console.error("Failed to fetch experiences:", error)
-    } finally {
-      setLoading(false)
-    }
+
+  const handleCompanySelect = (company_name: string) => {
+    setSelectedCompany(company_name)
+
+    const filteredExperiences = experiences.filter((e) => e.company_name === company_name)
+
+    setSelectedCompanyExperiences(filteredExperiences)
   }
 
   const handleDelete = async (id: string) => {
@@ -61,7 +97,7 @@ export default function ManageExperiences() {
       })
 
       if (response.ok) {
-        setExperiences(experiences.filter((e) => e._id !== id))
+        setSelectedCompanyExperiences((prev) => prev.filter((e) => e._id !== id))
       }
     } catch (error) {
       console.error("Failed to delete experience:", error)
@@ -70,6 +106,8 @@ export default function ManageExperiences() {
       toast.success("Experience deleted successfully!")
     }
   }
+
+  console.log(selectedCompanyExperiences);
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -85,16 +123,49 @@ export default function ManageExperiences() {
               </Link>
               <div>
                 <h1 className="text-3xl font-bold text-slate-900">Manage Experiences</h1>
-                <p className="text-slate-600 mt-1">Total: {experiences.length} experiences</p>
+                <p className="text-slate-600 mt-1">Total: {selectedCompanyExperiences.length} experiences</p>
               </div>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Company Selection */}
+      <div
+       className="flex justify-start items-center px-6 py-4 max-w-7xl mx-auto gap-3"
+      >
+        <div className="font-medium  text-zinc-800">
+          filter by Company :
+        </div>
+        <div className="space-y-3">
+          {loading ? (
+            <div className="h-10 bg-slate-200 rounded animate-pulse"></div>
+          ) : companies.length > 0 && (
+            <div>
+              <select
+                value={selectedCompany}
+                onChange={(e) => handleCompanySelect(e.target.value)}
+                className="w-full p-1 border border-slate-300 rounded-xl 
+                text-slate-900
+                bg-gradient-to-tr from-white to-orange-300
+                focus:outline-none focus:ring-2 focus:ring-blue-500
+                font-medium 
+                "
+              >
+                {companies.map((company) => (
+                  <option key={company} value={company}>
+                    {company}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <Card className="border-slate-200 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Card className="border-slate-200 bg-white relative">
           <CardHeader>
             <CardTitle>All Experiences</CardTitle>
             <CardDescription>View and manage all interview experiences</CardDescription>
@@ -104,80 +175,71 @@ export default function ManageExperiences() {
               <div className="flex justify-center py-8">
                 <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
               </div>
-            ) : experiences.length === 0 ? (
-              <p className="text-center text-slate-600 py-8">No experiences found</p>
+            ) : selectedCompanyExperiences.length === 0 ? (
+              <p className="text-center text-slate-600 py-8">No Experiences found</p>
             ) : (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Company</TableHead>
-                      <TableHead>LPA</TableHead>
-                      <TableHead>Feedback</TableHead>
-                      <TableHead>Rounds</TableHead>
-                      <TableHead>Languages</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Action</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {experiences.map((exp) => (
-                      <TableRow key={exp._id}>
-                        <TableCell className="font-medium">{exp.company_name}</TableCell>
-                        <TableCell>{exp.lpa}</TableCell>
-                        <TableCell>
-                          <Badge
-                            className={
-                              exp.feedback_rating === "positive"
-                                ? "bg-green-100 text-green-800"
-                                : exp.feedback_rating === "negative"
-                                  ? "bg-red-100 text-red-800"
-                                  : "bg-yellow-100 text-yellow-800"
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {selectedCompanyExperiences.map((exp, idx) => (
+                  <Card key={exp._id ?? `experience-${idx}`} className="flex-1 hover:shadow-lg transition-shadow cursor-pointer border-slate-200 hover:border-blue-300 relative exp-card">
+                    <Bin id={exp._id} handler={handleDelete} />
+                    <CardHeader>
+                      <div className="flex items-start justify-between mt-1.5">
+                        <div className="flex-1">
+                          <CardTitle className="text-xl text-slate-900">{exp.company_name}</CardTitle>
+                          <CardDescription className="mt-1">
+                            {exp.total_experiences} experience{exp.total_experiences !== 1 ? "s" : ""}
+                          </CardDescription>
+                        </div>
+                        <Badge
+                          className={`ml-2 ${
+                            exp.feedback_rating === "easy"
+                              ? "bg-green-100 text-green-800"
+                              : exp.feedback_rating === "medium"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {exp.feedback_rating}
+                        </Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {/* Key Stats */}
+                      {exp.lpa && <div className="grid grid-cols-2 gap-4">
+                        <div className="flex items-start gap-2">
+                          <IndianRupee className="w-4 h-4 text-slate-600 mt-1 flex-shrink-0" />
+                          <div>
+                            <p className="text-xs text-slate-600">LPA</p>
+                            <p className="text-sm font-semibold text-slate-900">
+                              {exp.lpa === "N/A" ? "N/A" : `${exp.lpa}L`}
+                            </p>
+                          </div>
+                        </div>
+                      </div>}
+
+                      {/* Languages */}
+                      {exp.languages_used.length > 0 && (
+                        <div className="pt-2 border-t border-slate-200">
+                          <p className="text-xs text-slate-600 mb-2">Languages</p>
+                          <div className="flex flex-wrap gap-2">
+                            {exp.languages_used.map((lang: string, lidx: number) => (
+                              <Badge key={`${lang}-${lidx}`} className="bg-slate-100 text-slate-800">
+                                {lang}
+                              </Badge>
+                            ))
                             }
-                          >
-                            {exp.feedback_rating}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>{exp.selection_rounds}</TableCell>
-                        <TableCell className="text-sm">{exp.languages_used}</TableCell>
-                        <TableCell className="text-sm">
-                          {new Date(
-                            typeof exp.timestamp === "string" ? exp.timestamp : exp.timestamp,
-                          ).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell>
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogTitle>Delete Experience</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Are you sure you want to delete this experience? This action cannot be undone.
-                              </AlertDialogDescription>
-                              <div className="flex gap-4 justify-end">
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction
-                                  onClick={() => handleDelete(exp._id)}
-                                  disabled={deleting === exp._id}
-                                  className="bg-red-600 hover:bg-red-700"
-                                >
-                                  {deleting === exp._id ? "Deleting..." : "Delete"}
-                                </AlertDialogAction>
-                              </div>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Latest Update */}
+                      <div className="pt-2 border-t border-slate-200 flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-slate-600" />
+                        <p className="text-xs text-slate-500">Latest: {new Date(exp.timestamp).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric'})}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
             )}
           </CardContent>

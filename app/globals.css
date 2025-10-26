@@ -128,4 +128,8 @@
   @apply opacity-100 ;
 }
 
+.exp-card:hover .bin {
+  @apply opacity-100 ;
+}
+
 

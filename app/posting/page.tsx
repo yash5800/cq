@@ -20,7 +20,7 @@ interface FormData {
   selection_rounds: string
   lpa: string
   other_details: string
-  feedback_rating: "positive" | "negative" | "neutral"
+  feedback_rating: "easy" | "hard" | "medium"
 }
 
 function capitalizeFirstLetter(string : String) {
@@ -39,7 +39,7 @@ export default function PostingPage() {
     selection_rounds: "",
     lpa: "",
     other_details: "",
-    feedback_rating: "neutral",
+    feedback_rating: "medium",
   })
   const [loading, setLoading] = useState(false)
   const [companiesLoading, setCompaniesLoading] = useState(true)
@@ -112,15 +112,19 @@ export default function PostingPage() {
 
     if (!formData.company_name.trim()) {
       setError("Company name is required")
-      return
-    } else if (!formData.interview_questions.trim()) {
-      setError("Please provide the interview questions asked")
+      toast.error("Company name is required!")
       return
     } else if (!formData.languages_used.trim()) {
       setError("Please provide the languages used")
+      toast.error("Please provide the languages used")
+      return
+    } else if (!formData.interview_questions.trim()) {
+      setError("Please provide the interview questions asked")
+      toast.error("Please provide the interview questions asked")
       return
     } else if (!formData.feedback_rating.trim()) {
       setError("Please provide your overall experience feedback")
+      toast.error("Please provide your overall experience feedback")
       return
     }
 
@@ -311,9 +315,9 @@ export default function PostingPage() {
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-slate-300 rounded-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="positive">Positive - Good experience</option>
-                  <option value="neutral">Neutral - Average experience</option>
-                  <option value="negative">Negative - Difficult experience</option>
+                  <option value="easy">Easy - Good experience</option>
+                  <option value="medium">Medium - Average experience</option>
+                  <option value="hard">Hard - Difficult experience</option>
                 </select>
               </div>
 

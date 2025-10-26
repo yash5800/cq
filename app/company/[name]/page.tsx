@@ -18,7 +18,7 @@ interface Experience {
   selection_rounds: string
   lpa: string
   other_details: string
-  feedback_rating: "positive" | "negative" | "neutral"
+  feedback_rating: "easy" | "hard" | "medium"
   timestamp: string
 }
 
@@ -142,9 +142,9 @@ export default function CompanyDetailPage() {
 
   const stats = {
     total: experiences.length,
-    positive: experiences.filter((e) => e.feedback_rating === "positive").length,
-    neutral: experiences.filter((e) => e.feedback_rating === "neutral").length,
-    negative: experiences.filter((e) => e.feedback_rating === "negative").length,
+    easy: experiences.filter((e) => e.feedback_rating === "easy").length,
+    medium: experiences.filter((e) => e.feedback_rating === "medium").length,
+    hard: experiences.filter((e) => e.feedback_rating === "hard").length,
     averageLpa: (() => {
       const lpaValues = experiences
         .map((e) => {
@@ -169,9 +169,9 @@ export default function CompanyDetailPage() {
 
   const getFeedbackIcon = (rating: string) => {
     switch (rating) {
-      case "positive":
+      case "easy":
         return <ThumbsUp className="w-4 h-4" />
-      case "negative":
+      case "hard":
         return <ThumbsDown className="w-4 h-4" />
       default:
         return null
@@ -242,8 +242,8 @@ export default function CompanyDetailPage() {
               </Card>
               <Card className="border-slate-200">
                 <CardContent className="pt-6">
-                  <p className="text-sm text-slate-600">Positive</p>
-                  <p className="text-2xl font-bold text-green-600">{stats.positive}</p>
+                  <p className="text-sm text-slate-600">Easy</p>
+                  <p className="text-2xl font-bold text-green-600">{stats.easy}</p>
                 </CardContent>
               </Card>
               <Card className="border-slate-200">
@@ -258,7 +258,7 @@ export default function CompanyDetailPage() {
                 <CardContent className="pt-6">
                   <p className="text-sm text-slate-600">Success Rate</p>
                   <p className="text-2xl font-bold text-blue-600">
-                    {Math.round((stats.positive / stats.total) * 100)}%
+                    {Math.round((stats.easy / stats.total) * 100)}%
                   </p>
                 </CardContent>
               </Card>
@@ -375,13 +375,13 @@ export default function CompanyDetailPage() {
                       <div className="flex justify-between mb-1">
                         <span className="text-sm text-slate-600">Easy</span>
                         <span className="text-sm font-semibold text-green-600">
-                          {stats.positive} ({Math.round((stats.positive / stats.total) * 100)}%)
+                          {stats.easy} ({Math.round((stats.easy / stats.total) * 100)}%)
                         </span>
                       </div>
                       <div className="w-full bg-slate-200 rounded-full h-2">
                         <div
                           className="bg-green-500 h-2 rounded-full"
-                          style={{ width: `${(stats.positive / stats.total) * 100}%` }}
+                          style={{ width: `${(stats.easy / stats.total) * 100}%` }}
                         />
                       </div>
                     </div>
@@ -389,13 +389,13 @@ export default function CompanyDetailPage() {
                       <div className="flex justify-between mb-1">
                         <span className="text-sm text-slate-600">Medium</span>
                         <span className="text-sm font-semibold text-yellow-600">
-                          {stats.neutral} ({Math.round((stats.neutral / stats.total) * 100)}%)
+                          {stats.medium} ({Math.round((stats.medium / stats.total) * 100)}%)
                         </span>
                       </div>
                       <div className="w-full bg-slate-200 rounded-full h-2">
                         <div
                           className="bg-yellow-500 h-2 rounded-full"
-                          style={{ width: `${(stats.neutral / stats.total) * 100}%` }}
+                          style={{ width: `${(stats.medium / stats.total) * 100}%` }}
                         />
                       </div>
                     </div>
@@ -403,13 +403,13 @@ export default function CompanyDetailPage() {
                       <div className="flex justify-between mb-1">
                         <span className="text-sm text-slate-600">Hard</span>
                         <span className="text-sm font-semibold text-red-600">
-                          {stats.negative} ({Math.round((stats.negative / stats.total) * 100)}%)
+                          {stats.hard} ({Math.round((stats.hard / stats.total) * 100)}%)
                         </span>
                       </div>
                       <div className="w-full bg-slate-200 rounded-full h-2">
                         <div
                           className="bg-red-500 h-2 rounded-full"
-                          style={{ width: `${(stats.negative / stats.total) * 100}%` }}
+                          style={{ width: `${(stats.hard / stats.total) * 100}%` }}
                         />
                       </div>
                     </div>
@@ -431,15 +431,15 @@ export default function CompanyDetailPage() {
                             <CardTitle className="text-lg">Experience #{stats.total - index}</CardTitle>
                             <Badge
                               className={`${
-                                exp.feedback_rating === "positive"
+                                exp.feedback_rating === "easy"
                                   ? "bg-green-100 text-green-800"
-                                  : exp.feedback_rating === "negative"
-                                    ? "bg-red-100 text-red-800"
-                                    : "bg-yellow-100 text-yellow-800"
+                                  : exp.feedback_rating === "medium"
+                                    ? "bg-yellow-100 text-yellow-800"
+                                    : "bg-red-100 text-red-800"
                               }`}
                             >
-                              {exp.feedback_rating === "positive" && <ThumbsUp className="w-4 h-4" />}
-                              {exp.feedback_rating === "negative" && <ThumbsDown className="w-4 h-4" />}
+                              {exp.feedback_rating === "easy" && <ThumbsUp className="w-4 h-4" />}
+                              {exp.feedback_rating === "hard" && <ThumbsDown className="w-4 h-4" />}
                               <span className="ml-1 capitalize">{exp.feedback_rating}</span>
                             </Badge>
                           </div>

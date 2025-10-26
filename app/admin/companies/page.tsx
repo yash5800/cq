@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { use, useEffect, useState } from "react"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -26,35 +26,37 @@ export default function ManageCompanies() {
   const [experiences, setExperiences] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState<string | null>(null)
+  const [selectedCompany, setSelectedCompany] = useState<string>("")
+
 
   useEffect(() => {
-    fetchData()
+      const fetchData = async () => {
+        try {
+          setLoading(true)
+          const [companiesRes, experiencesRes] = await Promise.all([
+            fetch("/api/admin/companies"),
+            fetch("/api/admin/experiences"),
+          ])
+
+          const companiesList = await companiesRes.json()
+          const experiencesList = await experiencesRes.json()
+          setExperiences(experiencesList)
+
+          const companyData = companiesList.map((name: string) => ({
+            name,
+            experience_count: experiencesList.filter((e: any) => e.company_name === name).length,
+          }))
+
+          setCompanies((companyData as CompanyData[]).sort((a: CompanyData, b: CompanyData) => b.experience_count - a.experience_count))
+        } catch (error) {
+          console.error("Failed to fetch companies:", error)
+        } finally {
+          setLoading(false)
+        }
+      }
+
+      fetchData().finally(() => setLoading(false))
   }, [])
-
-  const fetchData = async () => {
-    try {
-      setLoading(true)
-      const [companiesRes, experiencesRes] = await Promise.all([
-        fetch("/api/admin/companies"),
-        fetch("/api/admin/experiences"),
-      ])
-
-      const companiesList = await companiesRes.json()
-      const experiencesList = await experiencesRes.json()
-      setExperiences(experiencesList)
-
-      const companyData = companiesList.map((name: string) => ({
-        name,
-        experience_count: experiencesList.filter((e: any) => e.company_name === name).length,
-      }))
-
-      setCompanies((companyData as CompanyData[]).sort((a: CompanyData, b: CompanyData) => b.experience_count - a.experience_count))
-    } catch (error) {
-      console.error("Failed to fetch companies:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const handleDelete = async (company_name: string) => {
     try {
@@ -96,6 +98,8 @@ export default function ManageCompanies() {
           </div>
         </div>
       </div>
+
+
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
