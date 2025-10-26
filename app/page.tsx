@@ -546,13 +546,15 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-12 text-center mb-20">
+            <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-12 text-center mb-20 flex justify-center items-center flex-col">
               <h2 className="text-3xl font-bold text-white mb-4">Ready to Share Your Experience?</h2>
               <p className="text-blue-100 mb-8 max-w-2xl mx-auto">
                 Help other students succeed by sharing your interview experience. It only takes a few minutes!
               </p>
               <Link href="/posting">
-                <Button className="bg-white text-blue-600 hover:bg-slate-100 font-semibold px-8 py-6 text-lg">
+                <Button className="bg-white text-blue-600 hover:bg-slate-100 font-semibold px-8 py-6
+                max-md:px-2
+                text-lg">
                   Share Your Experience Now
                 </Button>
               </Link>
