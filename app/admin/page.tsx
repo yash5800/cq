@@ -1,10 +1,11 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { BarChart3, Users, FileText, Eye } from "lucide-react"
+import { BarChart3, Users, FileText, Eye, LogOut } from "lucide-react"
 
 interface AdminStats {
   total_experiences: number
@@ -15,8 +16,15 @@ interface AdminStats {
 export default function AdminDashboard() {
   const [stats, setStats] = useState<AdminStats>({ total_experiences: 0, total_companies: 0, total_visits: 0 })
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
+    const isAuthenticated = localStorage.getItem("adminAuth")
+    if (!isAuthenticated) {
+      router.push("/admin/login")
+      return
+    }
+
     const fetchStats = async () => {
       try {
         const [expRes, visitsRes] = await Promise.all([fetch("/api/admin/experiences"), fetch("/api/visits")])
@@ -39,7 +47,12 @@ export default function AdminDashboard() {
     }
 
     fetchStats()
-  }, [])
+  }, [router])
+
+  const handleLogout = () => {
+    localStorage.removeItem("adminAuth")
+    router.push("/admin/login")
+  }
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -51,9 +64,15 @@ export default function AdminDashboard() {
               <h1 className="text-3xl font-bold text-slate-900">Admin Dashboard</h1>
               <p className="text-slate-600 mt-1">Manage platform data and monitor activity</p>
             </div>
-            <Link href="/">
-              <Button variant="outline">Back to Home</Button>
-            </Link>
+            <div className="flex gap-4">
+              <Link href="/">
+                <Button variant="outline">Back to Home</Button>
+              </Link>
+              <Button onClick={handleLogout} variant="destructive" className="flex items-center gap-2">
+                <LogOut className="w-4 h-4" />
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
       </div>

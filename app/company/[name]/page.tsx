@@ -66,9 +66,9 @@ export default function CompanyDetailPage() {
         console.error("Error fetching experiences:", err)
       } finally {
         setLoading(false)
+        toast.success("Experiences loaded successfully!")
       }
 
-      toast.success("Experiences loaded successfully!")
     }
 
     fetchExperiences()

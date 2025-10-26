@@ -10,8 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ArrowLeft, Plus, X } from "lucide-react"
-import { set } from "date-fns"
-import { el } from "date-fns/locale"
+import { toast } from "react-toastify"
 
 interface FormData {
   company_name: string
@@ -145,6 +144,7 @@ export default function PostingPage() {
       console.error("Error submitting form:", err)
     } finally {
       setLoading(false)
+      toast.success("Experience submitted successfully!")
     }
   }
 
