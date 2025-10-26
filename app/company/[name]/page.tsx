@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Eye , ThumbsUp, ThumbsDown, TrendingUp, Code2, Zap } from "lucide-react"
+import { toast } from "react-toastify"
 
 interface Experience {
   _id: string
@@ -66,6 +67,8 @@ export default function CompanyDetailPage() {
       } finally {
         setLoading(false)
       }
+
+      toast.success("Experiences loaded successfully!")
     }
 
     fetchExperiences()
