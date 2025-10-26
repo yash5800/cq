@@ -401,7 +401,7 @@ export default function Home() {
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <Card className="border-slate-200 bg-white">
-                  <CardContent className="pt-8">
+                  <CardContent>
                     <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 mb-4">
                       <BookOpen className="w-6 h-6 text-blue-600" />
                     </div>
@@ -412,7 +412,7 @@ export default function Home() {
                   </CardContent>
                 </Card>
                 <Card className="border-slate-200 bg-white">
-                  <CardContent className="pt-8">
+                  <CardContent >
                     <div className="flex items-center justify-center w-12 h-12 rounded-full bg-green-100 mb-4">
                       <Briefcase className="w-6 h-6 text-green-600" />
                     </div>
@@ -423,7 +423,7 @@ export default function Home() {
                   </CardContent>
                 </Card>
                 <Card className="border-slate-200 bg-white">
-                  <CardContent className="pt-8">
+                  <CardContent >
                     <div className="flex items-center justify-center w-12 h-12 rounded-full bg-purple-100 mb-4">
                       <TrendingUp className="w-6 h-6 text-purple-600" />
                     </div>

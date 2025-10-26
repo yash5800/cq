@@ -373,7 +373,7 @@ export default function CompanyDetailPage() {
                   <div className="space-y-3">
                     <div>
                       <div className="flex justify-between mb-1">
-                        <span className="text-sm text-slate-600">Positive</span>
+                        <span className="text-sm text-slate-600">Easy</span>
                         <span className="text-sm font-semibold text-green-600">
                           {stats.positive} ({Math.round((stats.positive / stats.total) * 100)}%)
                         </span>
@@ -387,7 +387,7 @@ export default function CompanyDetailPage() {
                     </div>
                     <div>
                       <div className="flex justify-between mb-1">
-                        <span className="text-sm text-slate-600">Neutral</span>
+                        <span className="text-sm text-slate-600">Medium</span>
                         <span className="text-sm font-semibold text-yellow-600">
                           {stats.neutral} ({Math.round((stats.neutral / stats.total) * 100)}%)
                         </span>
@@ -401,7 +401,7 @@ export default function CompanyDetailPage() {
                     </div>
                     <div>
                       <div className="flex justify-between mb-1">
-                        <span className="text-sm text-slate-600">Negative</span>
+                        <span className="text-sm text-slate-600">Hard</span>
                         <span className="text-sm font-semibold text-red-600">
                           {stats.negative} ({Math.round((stats.negative / stats.total) * 100)}%)
                         </span>
@@ -459,7 +459,7 @@ export default function CompanyDetailPage() {
                         )}
                       </div>
                     </CardHeader>
-                    <CardContent className="pt-6 space-y-6">
+                    <CardContent className="space-y-6">
                       {exp.selection_rounds && (
                         <div>
                           <h3 className="font-semibold text-slate-900 mb-2">Selection Rounds</h3>

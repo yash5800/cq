@@ -37,7 +37,7 @@ export default function AdminDashboard() {
         setStats({
           total_experiences: experiences.length,
           total_companies: companies,
-          total_visits: visitsData.visits,
+          total_visits: visitsData.total_pageviews || 0,
         })
       } catch (error) {
         console.error("Failed to fetch stats:", error)
@@ -132,6 +132,21 @@ export default function AdminDashboard() {
 
         {/* Management Sections */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card className="border-slate-200 bg-white hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="w-5 h-5 text-orange-600" />
+                Analytics
+              </CardTitle>
+              <CardDescription>View detailed visit analytics and trends</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href="/admin/analytics">
+                <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white">Go to Analytics</Button>
+              </Link>
+            </CardContent>
+          </Card>
+
           <Card className="border-slate-200 bg-white hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
