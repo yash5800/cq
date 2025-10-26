@@ -6,7 +6,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { TrendingUp, SquareArrowOutUpRight , Users, Award, Zap, Calendar, IndianRupee, CheckCircle, Eye, Star, Briefcase, BookOpen } from "lucide-react"
-import { add } from "date-fns"
 import Footer from "@/components/footer"
 import { getSessionId } from "@/lib/utils"
 import Navbar from "@/components/navbar"

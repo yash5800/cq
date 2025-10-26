@@ -18,7 +18,6 @@ import {
   ResponsiveContainer,
 } from "recharts"
 import { FileText, Users, Eye, TrendingUp, AlertCircle } from "lucide-react"
-import AdminSidebar from "@/components/admin-sidebar"
 
 interface Experience {
   _id: string
@@ -113,7 +112,7 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <main className="flex-1 overflow-auto md:ml-0">
         {/* Header */}
-        <div className="bg-white border-b border-slate-200 sticky top-0 z-30 pt-16 md:pt-0">
+        <div className="bg-white border-b border-slate-200 top-0 z-30 pt-16 md:pt-0">
           <div className="px-6 py-6">
             <h1 className="text-3xl font-bold text-slate-900">Admin Dashboard</h1>
             <p className="text-slate-600 mt-1">Real-time platform analytics and management</p>

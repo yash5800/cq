@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Menu, X, BarChart3, Users, FileText, Eye, LogOut, Home } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { routeTo } from "@/lib/routeto"
 
 interface AdminSidebarProps {
   onLogout: () => void
@@ -22,8 +23,8 @@ export default function AdminSidebar({ onLogout }: AdminSidebarProps) {
 
   const navItems = [
     { icon: BarChart3, label: "Dashboard", href: "#dashboard", color: "text-blue-600" },
-    { icon: FileText, label: "Experiences", href: "#experiences", color: "text-purple-600" },
-    { icon: Users, label: "Companies", href: "#companies", color: "text-green-600" },
+    { icon: FileText, label: "Experiences", href: "/experiences", color: "text-purple-600" },
+    { icon: Users, label: "Companies", href: "/companies", color: "text-green-600" },
     { icon: Eye, label: "Traffic", href: "#traffic", color: "text-orange-600" },
   ]
 
@@ -32,14 +33,14 @@ export default function AdminSidebar({ onLogout }: AdminSidebarProps) {
       {/* Mobile Toggle */}
       <button
         onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="sticky top-4 left-4 z-50 md:hidden bg-white p-2 rounded-lg border border-slate-200 hover:bg-slate-50"
+        className="fixed top-4 left-4 z-50 md:hidden bg-white p-2 rounded-lg border border-slate-200 hover:bg-slate-50"
       >
         {isMobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white transition-all duration-300 z-40 ${
+        className={`max-md:fixed left-0 top-0 h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white transition-all duration-300 z-40 transform shrink-0 ${
           isOpen ? "w-64" : "w-20"
         } ${isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
@@ -56,7 +57,7 @@ export default function AdminSidebar({ onLogout }: AdminSidebarProps) {
           {navItems.map((item) => (
             <a
               key={item.label}
-              href={item.href}
+              href={routeTo(item.href)}
               onClick={() => setIsMobileOpen(false)}
               className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-700 transition-colors group"
             >
