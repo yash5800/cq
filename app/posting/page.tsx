@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ArrowLeft, Plus, X } from "lucide-react"
 import { toast } from "react-toastify"
+import Footer from "@/components/footer"
 
 interface FormData {
   company_name: string
@@ -344,6 +345,7 @@ export default function PostingPage() {
           </CardContent>
         </Card>
       </div>
+      <Footer />
     </main>
   )
 }

@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { TrendingUp, SquareArrowOutUpRight , Users, Award, Zap, Calendar, IndianRupee, CheckCircle, Eye, Star, Briefcase, BookOpen } from "lucide-react"
 import { add } from "date-fns"
 import Footer from "@/components/footer"
+import { getSessionId } from "@/lib/utils"
 
 interface Experience {
   _id: string
@@ -66,7 +67,19 @@ export default function Home() {
   useEffect(() => {
     const trackVisit = async () => {
       try {
-        await fetch("/api/visits", { method: "POST" })
+        // Generate or retrieve session ID
+        let sessionId = getSessionId();
+
+        // Send session ID to backend for tracking
+        const response = await fetch("/api/visits", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sessionId }),
+        })
+
+        if (!response.ok) {
+          console.error("Failed to track visit")
+        }
       } catch (error) {
         console.error("Failed to track visit:", error)
       }
@@ -74,6 +87,7 @@ export default function Home() {
 
     trackVisit()
   }, [])
+
 
   useEffect(() => {
 
@@ -89,6 +103,8 @@ export default function Home() {
 
         const experiences: Experience[] = await expResponse.json()
         const visitsData = await visitsResponse.json()
+
+        console.log("Visits Data:", visitsData);
 
         const companyMap = new Map<string, Experience[]>()
         experiences.forEach((exp) => {
@@ -153,7 +169,7 @@ export default function Home() {
           total_experiences: experiences.length,
           total_companies: stats.length,
           avg_success_rate: avgSuccessRate,
-          total_visits: visitsData.visits || 0,
+          total_visits: visitsData.total_pageviews || 0,
         })
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load experiences")

@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Eye , ThumbsUp, ThumbsDown, TrendingUp, Code2, Zap } from "lucide-react"
 import { toast } from "react-toastify"
+import Footer from "@/components/footer"
 
 interface Experience {
   _id: string
@@ -494,6 +495,8 @@ export default function CompanyDetailPage() {
           </div>
         )}
       </div>
+
+      <Footer />
     </main>
   )
 }
