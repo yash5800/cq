@@ -33,7 +33,10 @@ export default function AdminSidebar({ onLogout }: AdminSidebarProps) {
       {/* Mobile Toggle */}
       <button
         onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="fixed top-4 left-4 z-50 md:hidden bg-white p-2 rounded-lg border border-slate-200 hover:bg-slate-50"
+        className={`fixed top-4 z-50 md:hidden bg-white p-2 rounded-lg border border-slate-200 hover:bg-slate-50
+          transition-all duration-300
+        ${isMobileOpen ? "left-48" : "left-4"}  
+        `}
       >
         {isMobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>

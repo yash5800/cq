@@ -205,7 +205,8 @@ export default function ManageExperiences() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                       {/* Key Stats */}
-                      {exp.lpa && <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-2 gap-2">
+                      {exp.lpa && 
                         <div className="flex items-start gap-2">
                           <IndianRupee className="w-4 h-4 text-slate-600 mt-1 flex-shrink-0" />
                           <div>
@@ -215,7 +216,31 @@ export default function ManageExperiences() {
                             </p>
                           </div>
                         </div>
-                      </div>}
+                      }
+                      { 
+                       exp.selection_rounds && <div>
+                          <p className="text-xs text-slate-600">Selection Rounds</p>
+                          <p className="font-medium text-sm">{exp?.selection_rounds.split(/->/g).map((round :string, index:number) => (
+                            <span key={`round-${index}`}>
+                              {index + 1}. {round } <br />
+                            </span>
+                          ))}</p>
+                        </div>
+                      }
+                      </div>
+
+                      {/* Interview Questions */}
+                      {exp.interview_questions &&
+                      <div>
+                        <p className="text-xs text-slate-600 mb-2">Interview Questions</p>
+                        <ul className="list-disc list-inside max-h-24 overflow-y-auto">
+                          {exp.interview_questions.split("\n").map((question: string, qidx: number) => (
+                            question && <li key={`question-${qidx}`}>{question.trim()}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      }
+                    
 
                       {/* Languages */}
                       {exp.languages_used.length > 0 && (

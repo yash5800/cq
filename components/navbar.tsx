@@ -8,13 +8,8 @@ import { Menu, X } from "lucide-react"
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen)
-  }
-
-  const closeMenu = () => {
-    setIsOpen(false)
-  }
+  const toggleMenu = () => setIsOpen(!isOpen)
+  const closeMenu = () => setIsOpen(false)
 
   return (
     <nav className="bg-white border-b border-slate-200 sticky top-0 z-50">
@@ -23,10 +18,15 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex-shrink-0">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              {/* Gradient Logo Box */}
+              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-lg">IH</span>
               </div>
-              <span className="text-xl font-bold text-slate-900 hidden sm:inline">InterviewHub</span>
+
+              {/* Gradient Text */}
+              <span className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent hidden sm:inline">
+                Inter<span className="text-xl font-light">View</span>Hub
+              </span>
             </div>
           </Link>
 
@@ -37,6 +37,9 @@ export default function Navbar() {
             </Link>
             <Link href="/posting" className="text-slate-600 hover:text-slate-900 transition-colors font-medium">
               Share Experience
+            </Link>
+            <Link href="/questions" className="text-slate-600 hover:text-slate-900 transition-colors font-medium">
+              Questions
             </Link>
             <Link href="/admin/login" className="text-slate-600 hover:text-slate-900 transition-colors font-medium">
               Admin
@@ -62,15 +65,21 @@ export default function Navbar() {
                   Home
                 </button>
               </Link>
+              <Link href="/questions" onClick={closeMenu}>
+                <button className="w-full text-left px-3 py-2 rounded-md text-slate-700 hover:bg-slate-100 transition-colors font-medium">
+                  Questions
+                </button>
+              </Link>
               <Link href="/admin/login" onClick={closeMenu}>
-                <button className="w-full text-left px-3 py-2 rounded-md text-slate-700 hover:bg-slate-100 
-                transition-colors font-medium">
+                <button className="w-full text-left px-3 py-2 rounded-md text-slate-700 hover:bg-slate-100 transition-colors font-medium">
                   Admin Panel
                 </button>
               </Link>
               <div className="pt-2 space-y-2">
                 <Link href="/posting" onClick={closeMenu} className="block">
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">Share Your Experience</Button>
+                  <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+                    Share Your Experience
+                  </Button>
                 </Link>
               </div>
             </div>
