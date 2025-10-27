@@ -180,7 +180,7 @@ export default function ManageExperiences() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {selectedCompanyExperiences.map((exp, idx) => (
-                  <Card key={exp._id ?? `experience-${idx}`} className="flex-1 hover:shadow-lg transition-shadow cursor-pointer border-slate-200 hover:border-blue-300 exp-card ">
+                  <Card key={exp._id ?? `experience-${idx}`} className="flex-1 hover:shadow-lg transition-shadow cursor-pointer border-slate-200 hover:border-blue-300 exp-card relative">
                     <Bin id={exp._id} handler={handleDelete} />
                     <CardHeader>
                       <div className="flex items-start justify-between mt-1.5">
