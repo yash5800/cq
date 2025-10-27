@@ -296,7 +296,7 @@ export default function PostingPage() {
                   name="interview_questions"
                   value={formData.interview_questions}
                   onChange={handleInterviewQuestionsChange}
-                  placeholder="List the questions you were asked during the interview"
+                  placeholder="List the questions you were asked during the interview like Write a java code of object? Explain polymorphism?"
                   rows={4}
                   className="border-slate-300"
                 />

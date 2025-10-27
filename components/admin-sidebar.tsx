@@ -43,7 +43,7 @@ export default function AdminSidebar({ onLogout }: AdminSidebarProps) {
 
       {/* Sidebar */}
       <aside
-        className={`max-md:fixed left-0 top-0 h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white transition-all duration-300 z-40 transform shrink-0 ${
+        className={`sticky left-0 top-0 h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white transition-all duration-300 z-40 transform shrink-0 ${
           isOpen ? "w-64" : "w-20"
         } ${isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >

@@ -110,9 +110,9 @@ export default function ManageExperiences() {
   console.log(selectedCompanyExperiences);
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <main className="min-screen bg-gradient-to-br from-slate-50 to-slate-100 relative">
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-50">
+      <div className="bg-white border-b border-slate-200  top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -164,7 +164,7 @@ export default function ManageExperiences() {
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="px-4 sm:px-6 lg:px-8">
         <Card className="border-slate-200 bg-white relative">
           <CardHeader>
             <CardTitle>All Experiences</CardTitle>
@@ -180,7 +180,7 @@ export default function ManageExperiences() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {selectedCompanyExperiences.map((exp, idx) => (
-                  <Card key={exp._id ?? `experience-${idx}`} className="flex-1 hover:shadow-lg transition-shadow cursor-pointer border-slate-200 hover:border-blue-300 relative exp-card">
+                  <Card key={exp._id ?? `experience-${idx}`} className="flex-1 hover:shadow-lg transition-shadow cursor-pointer border-slate-200 hover:border-blue-300 exp-card ">
                     <Bin id={exp._id} handler={handleDelete} />
                     <CardHeader>
                       <div className="flex items-start justify-between mt-1.5">
