@@ -43,7 +43,7 @@ export default function AdminSidebar({ onLogout }: AdminSidebarProps) {
 
       {/* Sidebar */}
       <aside
-        className={`sticky left-0 top-0 h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white transition-all duration-300 z-40 transform shrink-0 ${
+        className={`max-md:fixed sticky left-0 top-0 h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white transition-all duration-300 z-40 transform shrink-0 ${
           isOpen ? "w-64" : "w-20"
         } ${isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
@@ -71,14 +71,14 @@ export default function AdminSidebar({ onLogout }: AdminSidebarProps) {
         </nav>
 
         {/* Footer */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-700 space-y-2">
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-700 space-y-2 flex flex-col gap-1">
           <Link href="/">
             <Button
               variant="outline"
               className="w-full justify-start gap-2 bg-slate-700 border-slate-600 text-white hover:bg-slate-600"
             >
               <Home className="w-4 h-4" />
-              {isOpen && <span className="text-sm">Back Home</span>}
+              {isOpen && <span className="text-sm">Back to Home</span>}
             </Button>
           </Link>
           <Button onClick={handleLogout} variant="destructive" className="w-full justify-start gap-2">

@@ -24,8 +24,9 @@ export default function Navbar() {
               </div>
 
               {/* Gradient Text */}
-              <span className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent hidden sm:inline">
-                Inter<span className="text-xl font-light">View</span>Hub
+              <span className="text-base font-normal  bg-clip-text text-slate-700 ">
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 text-transparent bg-clip-text">Interview</span>
+                <span className="text-xl font-light">Hub</span>
               </span>
             </div>
           </Link>
