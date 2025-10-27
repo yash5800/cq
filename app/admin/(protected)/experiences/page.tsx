@@ -4,30 +4,16 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { Trash2, ArrowLeft, Loader2, IndianRupee, CheckCircle, Calendar } from "lucide-react"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+import { Trash2, ArrowLeft, Loader2, IndianRupee, CheckCircle, Calendar, ThumbsDown, ThumbsUp } from "lucide-react"
+
 import { toast } from "react-toastify"
 import Bin from "@/components/bin"
 
-interface Experience {
-  _id: string
-  company_name: string
-  lpa: string
-  feedback_rating: "positive" | "negative" | "neutral"
-  selection_rounds: string
-  timestamp: string | number
-  languages_used: string
-  interview_questions: string
+interface Round {
+  id: number
+  roundName: string
+  daysGap: number
 }
 
 export default function ManageExperiences() {
@@ -107,6 +93,26 @@ export default function ManageExperiences() {
     }
   }
 
+  const handleVerifyToggle = async (id: string, verified: boolean) => {
+    try {
+      const response = await fetch("/api/admin/experiences", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      })
+
+      if (response.ok) {
+        setSelectedCompanyExperiences((prev) =>
+          prev.map((e) => (e._id === id ? { ...e, verified: !verified } : e)),
+        )
+        toast.success(`Experience ${!verified ? "verified" : "unverified"} successfully!`)
+      }
+    } catch (error) {
+      console.error("Failed to verify experience:", error)
+      toast.error("Failed to verify experience.")
+    }
+  }
+
   console.log(selectedCompanyExperiences);
 
   return (
@@ -182,6 +188,18 @@ export default function ManageExperiences() {
                 {selectedCompanyExperiences.map((exp, idx) => (
                   <Card key={exp._id ?? `experience-${idx}`} className="flex-1 hover:shadow-lg transition-shadow cursor-pointer border-slate-200 hover:border-blue-300 exp-card relative">
                     <Bin id={exp._id} handler={handleDelete} />
+                    {
+                      exp.selection_rounds && Array.isArray(exp.selection_rounds) && exp.selection_rounds.length > 0 && 
+                      <div className={`top-1 left-1 absolute  p-2 rounded-full hover:scale-105 transition-all duration-300
+                      ${ !exp.verified ? "hover:bg-green-300/20" : " hover:bg-red-300/20"}  
+                      `} title="Has Selection Rounds"
+                      onClick={()=>{ handleVerifyToggle(exp._id,exp.verified)
+
+                      }}
+                      >
+                        { !exp.verified ? <ThumbsUp className="w-4 h-4 text-green-400"/> : <ThumbsDown className="w-4 h-4 text-red-400"/>}
+                      </div>
+                    }
                     <CardHeader>
                       <div className="flex items-start justify-between mt-1.5">
                         <div className="flex-1">
@@ -218,11 +236,11 @@ export default function ManageExperiences() {
                         </div>
                       }
                       { 
-                       exp.selection_rounds && <div>
+                       exp.selection_rounds && Array.isArray(exp.selection_rounds) && exp.selection_rounds.length > 0 && <div>
                           <p className="text-xs text-slate-600">Selection Rounds</p>
-                          <p className="font-medium text-sm">{exp?.selection_rounds.split(/->/g).map((round :string, index:number) => (
+                          <p className="font-medium text-sm">{exp?.selection_rounds.map((round : Round, index:number) => (
                             <span key={`round-${index}`}>
-                              {index + 1}. {round } <br />
+                              {index + 1}. {round.roundName} { round.daysGap ? `(${round.daysGap} days)` : ''} <br />
                             </span>
                           ))}</p>
                         </div>

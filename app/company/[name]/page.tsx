@@ -6,7 +6,7 @@ import { useParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Eye , ThumbsUp, ThumbsDown, TrendingUp, Code2, Zap } from "lucide-react"
+import { ArrowLeft, Eye , ThumbsUp, ThumbsDown, TrendingUp, Code2, Zap, CheckCheck } from "lucide-react"
 import { toast } from "react-toastify"
 import Footer from "@/components/footer"
 
@@ -15,11 +15,18 @@ interface Experience {
   company_name: string
   languages_used: string
   interview_questions: string
-  selection_rounds: string
+  selection_rounds: Round[]
   lpa: string
   other_details: string
-  feedback_rating: "easy" | "hard" | "medium"
+  feedback_rating: "easy" | "hard" | "medium",
+  verified: boolean
   timestamp: string
+}
+
+interface Round {
+  id: number
+  roundName: string
+  daysGap: number
 }
 
 
@@ -90,20 +97,25 @@ export default function CompanyDetailPage() {
       .slice(0, 5)
   }
 
+  // && exp.verified
+
   const getTopRounds = () => {
-    const roundCount: Record<string, number> = {}
-    experiences.forEach((exp) => {
-      if (exp.selection_rounds) {
-        const rounds = exp.selection_rounds.split(",").map((r) => r.trim())
-        rounds.forEach((round) => {
-          roundCount[round] = (roundCount[round] || 0) + 1
-        })
-      }
-    })
-    return Object.entries(roundCount)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5)
+    if (!experiences || experiences.length === 0) return []
+
+    // Sort experiences by timestamp (latest first)
+    const sortedExperiences = [...experiences].sort(
+      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    )
+
+    // Take top 3 that have selection_rounds
+    const topRounds = sortedExperiences
+      .filter((exp) => Array.isArray(exp.selection_rounds) && exp.selection_rounds.length > 0 && exp.verified)
+      .slice(0, 3)
+      .map((exp) => exp.selection_rounds)
+
+    return topRounds
   }
+
 
   const getCommonQuestions = () => {
     const questionCount: Record<string, number> = {}
@@ -183,6 +195,7 @@ export default function CompanyDetailPage() {
   const commonQuestions = getCommonQuestions()
   const lpaRange = getLpaRange()
 
+  console.log("Top Rounds:", topRounds.length)
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Header */}
@@ -327,17 +340,38 @@ export default function CompanyDetailPage() {
                     <CardTitle className="flex items-center gap-2">
                       <Zap className="w-5 h-5 text-blue-600" />
                       Typical Interview Rounds
+                      <div className="flex gap-2 justify-center items-center rounded-2xl px-3 py-1 bg-green-100 text-green-400">
+                        <CheckCheck className="h-6 w-6 text-green-400" />
+                        <p>Verified</p>
+                      </div>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-2">
-                      {topRounds.map(([round, count]) => (
-                        <div key={round} className="flex items-center justify-between">
-                          <span className="text-slate-700">{round}</span>
-                          <span className="text-sm text-slate-600">
-                            {count} experience{count > 1 ? "s" : ""}
-                          </span>
-                        </div>
+                      {topRounds[0].map((round, idx) => (
+                        <div key={`round-${idx}`} className="relative flex flex-col items-center space-y-8">
+                            <div className="relative flex flex-col items-center">
+                              {/* Wire (except for last card) */}
+                              {idx < topRounds[0].length - 1 && (
+                                <div className="absolute top-full left-1/2 w-0.5 h-16 bg-gradient-to-b from-blue-400 via-blue-500 to-blue-400 animate-pulse shadow-[0_0_10px_#60a5fa]" />
+                              )}
+
+                              {/* Round Card */}
+                              <div className="relative p-5 rounded-2xl shadow-lg bg-white border border-blue-500 hover:shadow-blue-400/30 transition-all duration-300 w-64 text-center">
+                                <h4 className="text-lg font-semibold mb-2 text-blue-600">
+                                  {round.roundName}
+                                </h4>
+                                <p className="text-sm text-slate-600">
+                                  {round.daysGap > 0
+                                    ? `After ${round.daysGap} day${round.daysGap > 1 ? "s" : ""}`
+                                    : ""}
+                                </p>
+
+                                {/* Glowing border animation */}
+                                <div className="absolute inset-0 rounded-2xl border border-blue-400 animate-pulse opacity-40 blur-sm"></div>
+                              </div>
+                            </div>
+                          </div>
                       ))}
                     </div>
                   </CardContent>
@@ -460,13 +494,6 @@ export default function CompanyDetailPage() {
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                      {exp.selection_rounds && (
-                        <div>
-                          <h3 className="font-semibold text-slate-900 mb-2">Selection Rounds</h3>
-                          <p className="text-slate-700 whitespace-pre-wrap">{exp.selection_rounds}</p>
-                        </div>
-                      )}
-
                       {exp.languages_used && (
                         <div>
                           <h3 className="font-semibold text-slate-900 mb-2">Languages Used</h3>

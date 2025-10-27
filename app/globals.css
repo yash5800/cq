@@ -132,4 +132,23 @@
   @apply opacity-100 ;
 }
 
+mark {
+  background-color: #fde68a; /* Tailwind yellow-200 */
+  color: #000;
+  padding: 0 2px;
+  border-radius: 4px;
+}
+
+@keyframes pulseLine {
+  0%, 100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-pulse {
+  animation: pulseLine 1.5s infinite;
+}
 

@@ -25,10 +25,8 @@ export default function QuestionsPage() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCompany, setSelectedCompany] = useState("")
-  const [selectedLanguage, setSelectedLanguage] = useState("")
   const [selectedType, setSelectedType] = useState("")
   const [companies, setCompanies] = useState<string[]>([])
-  const [languages, setLanguages] = useState<string[]>([])
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -41,15 +39,12 @@ export default function QuestionsPage() {
 
         // Extract unique companies and languages
         const uniqueCompanies = new Set<string>()
-        const uniqueLanguages = new Set<string>()
 
         data.forEach((q: Question) => {
           q.companies.forEach((c) => uniqueCompanies.add(c))
-          q.languages.forEach((l) => uniqueLanguages.add(l))
         })
 
         setCompanies(Array.from(uniqueCompanies).sort())
-        setLanguages(Array.from(uniqueLanguages).sort())
       } catch (error) {
         console.error("Error fetching questions:", error)
       } finally {
@@ -75,12 +70,8 @@ export default function QuestionsPage() {
       filtered = filtered.filter((q) => q.companies.includes(selectedCompany))
     }
 
-    if (selectedLanguage) {
-      filtered = filtered.filter((q) => q.languages.includes(selectedLanguage))
-    }
-
     setFilteredQuestions(filtered)
-  }, [searchTerm, selectedCompany, selectedLanguage, selectedType, questions])
+  }, [searchTerm, selectedCompany, selectedType, questions])
 
   const getTypeBadgeColor = (type: string) => {
     switch (type) {
@@ -93,6 +84,13 @@ export default function QuestionsPage() {
       default:
         return "bg-slate-100 text-slate-800 border-slate-200"
     }
+  }
+
+  // ✅ Highlight matching search term in questions
+  const highlightText = (text: string, highlight: string) => {
+    if (!highlight.trim()) return text
+    const regex = new RegExp(`(${highlight})`, "gi")
+    return text.replace(regex, `<mark class='bg-yellow-200 text-black'>$1</mark>`)
   }
 
   // ✅ Group questions by company
@@ -138,28 +136,28 @@ export default function QuestionsPage() {
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-3">Question Type</label>
-                <div className="flex flex-wrap gap-2">
-                  {["All", "Coding", "General", "HR/Behavioral"].map((type) => (
-                    <Button
-                      key={type}
-                      onClick={() => setSelectedType(type === "All" ? "" : type)}
-                      variant={selectedType === (type === "All" ? "" : type) ? "default" : "outline"}
-                      className={`${
-                        selectedType === (type === "All" ? "" : type)
-                          ? "bg-blue-600 text-white border-blue-600"
-                          : "border-slate-300 text-slate-700 hover:bg-slate-50"
-                      }`}
-                    >
-                      {type}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Filters */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-3">Question Type</label>
+                  <div className="flex flex-wrap gap-2">
+                    {["All", "Coding", "General", "HR/Behavioral"].map((type) => (
+                      <Button
+                        key={type}
+                        onClick={() => setSelectedType(type === "All" ? "" : type)}
+                        variant={selectedType === (type === "All" ? "" : type) ? "default" : "outline"}
+                        className={`${
+                          selectedType === (type === "All" ? "" : type)
+                            ? "bg-blue-600 text-white border-blue-600"
+                            : "border-slate-300 text-slate-700 hover:bg-slate-50"
+                        }`}
+                      >
+                        {type}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Filters */}
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">Filter by Company</label>
                   <select
@@ -175,32 +173,15 @@ export default function QuestionsPage() {
                     ))}
                   </select>
                 </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Filter by Language</label>
-                  <select
-                    value={selectedLanguage}
-                    onChange={(e) => setSelectedLanguage(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="">All Languages</option>
-                    {languages.map((language) => (
-                      <option key={language} value={language}>
-                        {language}
-                      </option>
-                    ))}
-                  </select>
-                </div>
               </div>
 
               {/* Clear Filters */}
-              {(searchTerm || selectedCompany || selectedLanguage || selectedType) && (
+              {(searchTerm || selectedCompany || selectedType) && (
                 <Button
                   variant="outline"
                   onClick={() => {
                     setSearchTerm("")
                     setSelectedCompany("")
-                    setSelectedLanguage("")
                     setSelectedType("")
                   }}
                   className="w-full border-slate-300 text-slate-700 hover:bg-slate-50"
@@ -235,10 +216,7 @@ export default function QuestionsPage() {
         ) : (
           <div className="space-y-6">
             {Object.entries(groupedByCompany).map(([company, questions]) => (
-              <Card
-                key={company}
-                className="border-slate-200 bg-white hover:shadow-md transition-shadow"
-              >
+              <Card key={company} className="border-slate-200 bg-white hover:shadow-md transition-shadow">
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-2xl font-bold text-slate-900">{company}</h2>
@@ -255,12 +233,16 @@ export default function QuestionsPage() {
 
                   <div className="space-y-4">
                     {questions.map((q, i) => (
-                      <div
-                        key={i}
-                        className="border border-slate-100 rounded-lg p-4 hover:bg-slate-50 transition"
-                      >
+                      <div key={i} className="border border-slate-100 rounded-lg p-4 hover:bg-slate-50 transition">
                         <div className="flex items-start justify-between">
-                          <h3 className="text-lg font-medium text-slate-800">{q.question}</h3>
+                          {/* ✅ Highlighted Question */}
+                          <h3
+                            className="text-lg font-medium text-slate-800"
+                            dangerouslySetInnerHTML={{
+                              __html: highlightText(q.question, searchTerm),
+                            }}
+                          ></h3>
+
                           <Badge className={getTypeBadgeColor(q.type)}>{q.type}</Badge>
                         </div>
 

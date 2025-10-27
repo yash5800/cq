@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -17,10 +17,17 @@ interface FormData {
   company_name: string
   languages_used: string
   interview_questions: string
-  selection_rounds: string
+  selection_rounds: Round[]
   lpa: string
   other_details: string
-  feedback_rating: "easy" | "hard" | "medium"
+  feedback_rating: "easy" | "hard" | "medium",
+  verified: boolean
+}
+
+interface Round {
+  id: number
+  roundName: string
+  daysGap: number
 }
 
 function capitalizeFirstLetter(string : String) {
@@ -36,14 +43,17 @@ export default function PostingPage() {
     company_name: "",
     languages_used: "",
     interview_questions: "",
-    selection_rounds: "",
+    selection_rounds: [],
     lpa: "",
     other_details: "",
     feedback_rating: "medium",
+    verified: false,
   })
   const [loading, setLoading] = useState(false)
   const [companiesLoading, setCompaniesLoading] = useState(true)
   const [error, setError] = useState("")
+  const [selectionRounds, setSelectionRounds] = useState<Round[]>([{ id: 1, roundName: "", daysGap: 0 }])
+  // const roundRef = useRef<string>("");
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -76,13 +86,20 @@ export default function PostingPage() {
     }))
   }
 
-  const handleSelectionRoundsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLPA = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target
     setFormData((prev) => ({
       ...prev,
-      selection_rounds: value.replace(/,/g, " -> ").trim(),
+      lpa: value.toLowerCase().replace(/lpa/g, "").trim(),
     }))
   }
+
+  // const handleRoundsChange = (rounds: Round[]) => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     selection_rounds: rounds,
+  //   }))
+  // }
 
   const handleLanguagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target
@@ -146,6 +163,9 @@ export default function PostingPage() {
     }
 
     setLoading(true)
+
+    formData.selection_rounds = selectionRounds;
+    console.log("Submitting form data:", formData);
 
     try {
       const response = await fetch("/api/experiences", {
@@ -273,15 +293,98 @@ export default function PostingPage() {
 
               {/* Selection Rounds */}
               <div>
-                <label className="block text-sm font-medium text-slate-900 mb-2">Selection Rounds</label>
-                <Input
-                  type="text"
-                  name="selection_rounds"
-                  value={formData.selection_rounds}
-                  onChange={handleSelectionRoundsChange}
-                  placeholder="e.g., Online Test → Technical Round 1 → Technical Round 2 → HR Round"
-                  className="border-slate-300"
-                />
+                <label className="block text-sm font-medium text-slate-900 mb-4">Selection Rounds</label>
+
+                <div className="space-y-8 relative">
+                  {/* Glowing wire connecting rounds */}
+                  <div className="absolute left-5 top-8 bottom-8 w-0.5 bg-gradient-to-b from-blue-400 via-blue-300 to-blue-400 animate-pulse"></div>
+
+                  {selectionRounds
+                    .map((round, index) => {
+                      const trimmedRound = round
+                      return (
+                        <div
+                          key={index}
+                          className="relative pl-10"
+                        >
+                          {/* Glowing connector point */}
+                          <div className="absolute left-[15px] top-6 w-3 h-3 rounded-full bg-blue-500 shadow-[0_0_10px_3px_rgba(59,130,246,0.7)]"></div>
+
+                          <Card className="border border-blue-200 bg-white shadow-sm hover:shadow-md transition-all duration-200">
+                            <CardContent className="pt-5 pb-5 space-y-3">
+                              <div className="flex justify-between items-center">
+                                <h3 className="font-semibold text-slate-900">
+                                  Round {index + 1}
+                                </h3>
+                                {selectionRounds.length > 1 && (
+                                  <Button
+                                    type="button"
+                                    size="icon"
+                                    variant="ghost"
+                                    onClick={() => {
+                                      setSelectionRounds((prev) => prev.filter((_, i) => i !== index))
+                                    }}
+                                    className="text-red-500 hover:text-red-600"
+                                  >
+                                    <X className="w-4 h-4" />
+                                  </Button>
+                                )}
+                              </div>
+
+                              <Input
+                                type="text"
+                                placeholder="Enter round name (e.g., Online Test)"
+                                value={trimmedRound.roundName}
+                                onChange={(e)=>{
+                                  setSelectionRounds((prev)=>{
+                                    const updated = [...prev];
+                                    updated[index].roundName = e.target.value;
+                                    return updated
+                                  })
+                                }}
+                                className="border-slate-300"
+                              />
+
+                              {/* Optional: Time Gap */}
+                              {index > 0 && (
+                                <Input
+                                  type="text"
+                                  placeholder="Time gap from previous round (e.g., 2 days)"
+                                  onChange={(e) => {
+                                    setSelectionRounds((prev)=>{
+                                      const updated = [...prev];
+                                      updated[index].daysGap = parseInt(e.target.value) || 0;
+                                      return updated
+                                    })
+                                  }}
+                                  className="border-slate-300"
+                                />
+                              )}
+                            </CardContent>
+                          </Card>
+                        </div>
+                      )
+                    })}
+
+                  {/* Add Round Button */}
+                  <div className="flex justify-center">
+                    <Button
+                      type="button"
+                      onClick={(e) => {
+                        setSelectionRounds((prev) => {
+                          if(prev[prev.length - 1].roundName === "") return prev; // Prevent adding new round if last is empty
+
+                          const nextId = prev.length > 0 ? prev[prev.length - 1].id + 1 : 1;
+                          return [...prev, { id: nextId, roundName: "", daysGap: 0 }];
+                        });
+                      }}
+                      className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Round
+                    </Button>
+                  </div>
+                </div>
               </div>
 
               {/* Languages Used */}
@@ -317,8 +420,8 @@ export default function PostingPage() {
                   type="text"
                   name="lpa"
                   value={formData.lpa}
-                  onChange={handleChange}
-                  placeholder="e.g., 4 LPA, 12-20 LPA"
+                  onChange={handleLPA}
+                  placeholder="e.g., 4, 12-20"
                   className="border-slate-300"
                 />
               </div>
