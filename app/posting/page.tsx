@@ -76,6 +76,14 @@ export default function PostingPage() {
     }))
   }
 
+  const handleSelectionRoundsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target
+    setFormData((prev) => ({
+      ...prev,
+      selection_rounds: value.replace(/,/g, " -> ").trim(),
+    }))
+  }
+
   const handleLanguagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target
     const languages = value.split(",").map((lang) => capitalizeFirstLetter(lang.trim()))
@@ -270,7 +278,7 @@ export default function PostingPage() {
                   type="text"
                   name="selection_rounds"
                   value={formData.selection_rounds}
-                  onChange={handleChange}
+                  onChange={handleSelectionRoundsChange}
                   placeholder="e.g., Online Test → Technical Round 1 → Technical Round 2 → HR Round"
                   className="border-slate-300"
                 />
