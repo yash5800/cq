@@ -81,9 +81,18 @@ export default function PostingPage() {
     const languages = value.split(",").map((lang) => capitalizeFirstLetter(lang.trim()))
     setFormData((prev) => ({
       ...prev,
-      languages_used: languages.join(", "),
+      languages_used: languages.join(", ")
     }))
   }
+
+  const handleInterviewQuestionsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { value } = e.target
+    setFormData((prev) => ({
+      ...prev,
+      interview_questions: value.replace(/^\s*[\d\W_]+/gm, ""), // removes leading digits/symbols per line
+    }))
+  }
+
 
   const handleSelectCompany = (company: string) => {
     setFormData((prev) => ({
@@ -286,7 +295,7 @@ export default function PostingPage() {
                 <Textarea
                   name="interview_questions"
                   value={formData.interview_questions}
-                  onChange={handleChange}
+                  onChange={handleInterviewQuestionsChange}
                   placeholder="List the questions you were asked during the interview"
                   rows={4}
                   className="border-slate-300"
