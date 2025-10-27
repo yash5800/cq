@@ -24,9 +24,12 @@ export default function Navbar() {
               </div>
 
               {/* Gradient Text */}
-              <span className="text-base font-normal  bg-clip-text text-slate-700 ">
-                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 text-transparent bg-clip-text">Interview</span>
-                <span className="text-xl font-light">Hub</span>
+              <span className="text-xl font-bold text-slate-700">
+                Inter
+                <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 text-transparent bg-clip-text">
+                  View
+                </span>
+                Hub
               </span>
             </div>
           </Link>

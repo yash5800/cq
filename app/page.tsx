@@ -188,7 +188,7 @@ export default function Home() {
       <Navbar />
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {loading ? (
           <div>
             <div className="mb-12">
@@ -231,8 +231,99 @@ export default function Home() {
           </div>
         ) : (
           <div>
+            {/* Companies Section */}
+            <>
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold text-slate-900 mb-2">Companies</h2>
+                <p className="text-slate-600">
+                  {companies.length} companies • {totalStats.total_experiences} total experiences
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {companies.map((company) => (
+                  <Link key={company.name} href={`/company/${encodeURIComponent(company.name)}`} title="View More" className="company ">
+                    <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer border-slate-200 hover:border-blue-300 overflow-hidden relative">
+                      <div className="absolute flex top-0 -left-2 opacity-0 items-center gap-2 justify-center bg-green-200 rounded-br-2xl px-3 py-2 view transition-opacity duration-300">
+                        <SquareArrowOutUpRight className="w-5 h-5 text-green-500" />
+                        <p className="text-sm text-green-500">view  more</p>
+                      </div>
+                      <CardHeader>
+                        <div className="flex items-start justify-between mt-2.5">
+                          <div className="flex-1">
+                            <CardTitle className="text-xl text-slate-900">{company.name}</CardTitle>
+                            <CardDescription className="mt-1">
+                              {company.total_experiences} experience{company.total_experiences !== 1 ? "s" : ""}
+                            </CardDescription>
+                          </div>
+                          <Badge
+                            className={`ml-2 ${
+                              company.success_rate >= 70
+                                ? "bg-green-100 text-green-800"
+                                : company.success_rate >= 40
+                                  ? "bg-yellow-100 text-yellow-800"
+                                  : "bg-red-100 text-red-800"
+                            }`}
+                          >
+                            {company.success_rate}%
+                          </Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        {/* Key Stats */}
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="flex items-start gap-2">
+                            <IndianRupee className="w-4 h-4 text-slate-600 mt-1 flex-shrink-0" />
+                            <div>
+                              <p className="text-xs text-slate-600">Avg LPA</p>
+                              <p className="text-sm font-semibold text-slate-900">
+                                {company.average_lpa === "N/A" ? "N/A" : `${company.average_lpa}L`}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <CheckCircle className="w-4 h-4 text-green-600 mt-1 flex-shrink-0" />
+                            <div>
+                              <p className="text-xs text-slate-600">Easy</p>
+                              <p className="text-sm font-semibold text-green-600">
+                                {company.feedback}/{company.total_experiences}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Languages */}
+                        {company.languages_used.length > 0 && (
+                          <div className="pt-2 border-t border-slate-200">
+                            <p className="text-xs text-slate-600 mb-2">Top Languages</p>
+                            <div className="flex flex-wrap gap-2">
+                              {company.languages_used.map((lang) => (
+                                <Badge
+                                  key={lang}
+                                  variant="outline"
+                                  className="bg-blue-50 text-blue-700 border-blue-200 text-xs"
+                                >
+                                  {lang}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Latest Update */}
+                        <div className="pt-2 border-t border-slate-200 flex items-center gap-2">
+                          <Calendar className="w-4 h-4 text-slate-600" />
+                          <p className="text-xs text-slate-500">Latest: {company.latest_date}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            </>
+
             {/* Platform Overview */}
-            <div className="mb-12">
+            <div className="mt-12">
               <h2 className="text-2xl font-bold text-slate-900 mb-6">Platform Overview</h2>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Card className="border-slate-200 bg-white">
@@ -293,96 +384,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Companies Section */}
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-slate-900 mb-2">Companies</h2>
-              <p className="text-slate-600">
-                {companies.length} companies • {totalStats.total_experiences} total experiences
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {companies.map((company) => (
-                <Link key={company.name} href={`/company/${encodeURIComponent(company.name)}`} title="View More" className="company ">
-                  <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer border-slate-200 hover:border-blue-300 overflow-hidden relative">
-                    <div className="absolute flex top-0 -left-2 opacity-0 items-center gap-2 justify-center bg-green-200 rounded-br-2xl px-3 py-2 view transition-opacity duration-300">
-                      <SquareArrowOutUpRight className="w-5 h-5 text-green-500" />
-                      <p className="text-sm text-green-500">view  more</p>
-                    </div>
-                    <CardHeader>
-                      <div className="flex items-start justify-between mt-2.5">
-                        <div className="flex-1">
-                          <CardTitle className="text-xl text-slate-900">{company.name}</CardTitle>
-                          <CardDescription className="mt-1">
-                            {company.total_experiences} experience{company.total_experiences !== 1 ? "s" : ""}
-                          </CardDescription>
-                        </div>
-                        <Badge
-                          className={`ml-2 ${
-                            company.success_rate >= 70
-                              ? "bg-green-100 text-green-800"
-                              : company.success_rate >= 40
-                                ? "bg-yellow-100 text-yellow-800"
-                                : "bg-red-100 text-red-800"
-                          }`}
-                        >
-                          {company.success_rate}%
-                        </Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      {/* Key Stats */}
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="flex items-start gap-2">
-                          <IndianRupee className="w-4 h-4 text-slate-600 mt-1 flex-shrink-0" />
-                          <div>
-                            <p className="text-xs text-slate-600">Avg LPA</p>
-                            <p className="text-sm font-semibold text-slate-900">
-                              {company.average_lpa === "N/A" ? "N/A" : `${company.average_lpa}L`}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-start gap-2">
-                          <CheckCircle className="w-4 h-4 text-green-600 mt-1 flex-shrink-0" />
-                          <div>
-                            <p className="text-xs text-slate-600">Easy</p>
-                            <p className="text-sm font-semibold text-green-600">
-                              {company.feedback}/{company.total_experiences}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Languages */}
-                      {company.languages_used.length > 0 && (
-                        <div className="pt-2 border-t border-slate-200">
-                          <p className="text-xs text-slate-600 mb-2">Top Languages</p>
-                          <div className="flex flex-wrap gap-2">
-                            {company.languages_used.map((lang) => (
-                              <Badge
-                                key={lang}
-                                variant="outline"
-                                className="bg-blue-50 text-blue-700 border-blue-200 text-xs"
-                              >
-                                {lang}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Latest Update */}
-                      <div className="pt-2 border-t border-slate-200 flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-slate-600" />
-                        <p className="text-xs text-slate-500">Latest: {company.latest_date}</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
-            </div>
-
-            <div className="mb-20 mt-20">
+            <div className="mb-20 mt-10">
               <h2 className="text-3xl font-bold text-slate-900 mb-4 text-center">How It Works</h2>
               <p className="text-slate-600 text-center mb-12 max-w-2xl mx-auto">
                 InterviewHub makes it easy to learn from real interview experiences and prepare for your dream job.

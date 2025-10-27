@@ -95,6 +95,15 @@ export default function QuestionsPage() {
     }
   }
 
+  // ✅ Group questions by company
+  const groupedByCompany: Record<string, Question[]> = {}
+  filteredQuestions.forEach((question) => {
+    question.companies.forEach((company) => {
+      if (!groupedByCompany[company]) groupedByCompany[company] = []
+      groupedByCompany[company].push(question)
+    })
+  })
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       <Navbar />
@@ -109,7 +118,9 @@ export default function QuestionsPage() {
             </Button>
           </Link>
           <h1 className="text-4xl font-bold text-slate-900 mb-2">Interview Question Bank</h1>
-          <p className="text-slate-600">Search through {questions.length} interview questions asked across companies</p>
+          <p className="text-slate-600">
+            Search through {questions.length} interview questions asked across companies
+          </p>
         </div>
 
         {/* Search and Filters */}
@@ -201,7 +212,7 @@ export default function QuestionsPage() {
           </CardContent>
         </Card>
 
-        {/* Questions List */}
+        {/* Questions grouped by company */}
         {loading ? (
           <div className="space-y-4">
             {[...Array(5)].map((_, i) => (
@@ -213,7 +224,7 @@ export default function QuestionsPage() {
               </Card>
             ))}
           </div>
-        ) : filteredQuestions.length === 0 ? (
+        ) : Object.keys(groupedByCompany).length === 0 ? (
           <Card className="border-slate-200 bg-white">
             <CardContent className="pt-12 pb-12 text-center">
               <Filter className="w-12 h-12 text-slate-300 mx-auto mb-4" />
@@ -222,64 +233,43 @@ export default function QuestionsPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className="space-y-4">
-            {filteredQuestions.map((question, index) => (
-              <Card key={index} className="border-slate-200 bg-white hover:shadow-md transition-shadow">
+          <div className="space-y-6">
+            {Object.entries(groupedByCompany).map(([company, questions]) => (
+              <Card
+                key={company}
+                className="border-slate-200 bg-white hover:shadow-md transition-shadow"
+              >
                 <CardContent className="pt-6">
-                  <div className="mb-4">
-                    <div className="flex items-start justify-between mb-3">
-                      <h3 className="text-lg font-semibold text-slate-900 flex-1">{question.question}</h3>
-                      <Badge className={`ml-2 ${getTypeBadgeColor(question.type)}`}>{question.type}</Badge>
-                    </div>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-2xl font-bold text-slate-900">{company}</h2>
+                    <Link href={`/company/${encodeURIComponent(company)}`}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="border-slate-300 text-slate-700 hover:bg-slate-50 bg-transparent"
+                      >
+                        View Experiences
+                      </Button>
+                    </Link>
+                  </div>
 
-                    <div className="space-y-3">
-                      {/* Companies */}
-                      <div>
-                        <p className="text-xs font-medium text-slate-600 mb-2">Asked at:</p>
-                        <div className="flex flex-wrap gap-2">
-                          {question.companies.map((company) => (
-                            <Badge key={company} className="bg-blue-100 text-blue-800 border-blue-200">
-                              {company}
-                            </Badge>
-                          ))}
+                  <div className="space-y-4">
+                    {questions.map((q, i) => (
+                      <div
+                        key={i}
+                        className="border border-slate-100 rounded-lg p-4 hover:bg-slate-50 transition"
+                      >
+                        <div className="flex items-start justify-between">
+                          <h3 className="text-lg font-medium text-slate-800">{q.question}</h3>
+                          <Badge className={getTypeBadgeColor(q.type)}>{q.type}</Badge>
                         </div>
-                      </div>
 
-                      {/* Languages */}
-                      {question.languages.length > 0 && (
-                        <div>
-                          <p className="text-xs font-medium text-slate-600 mb-2">Languages:</p>
-                          <div className="flex flex-wrap gap-2">
-                            {question.languages.map((lang) => (
-                              <Badge
-                                key={lang}
-                                variant="outline"
-                                className="bg-green-50 text-green-700 border-green-200"
-                              >
-                                {lang}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Frequency */}
-                      <div className="flex items-center justify-between pt-2 border-t border-slate-200">
-                        <span className="text-sm text-slate-600">
-                          Asked <span className="font-semibold text-slate-900">{question.count}</span> time
-                          {question.count !== 1 ? "s" : ""}
-                        </span>
-                        <Link href={`/company/${encodeURIComponent(question.companies[0])}`}>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="border-slate-300 text-slate-700 hover:bg-slate-50 bg-transparent"
-                          >
-                            View Experiences
-                          </Button>
-                        </Link>
+                        <p className="text-sm text-slate-600 mt-2">
+                          Asked <span className="font-semibold text-slate-900">{q.count}</span> time
+                          {q.count !== 1 ? "s" : ""}
+                        </p>
                       </div>
-                    </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
@@ -291,8 +281,9 @@ export default function QuestionsPage() {
         {!loading && (
           <div className="mt-8 text-center text-slate-600">
             <p>
-              Showing <span className="font-semibold text-slate-900">{filteredQuestions.length}</span> of{" "}
-              <span className="font-semibold text-slate-900">{questions.length}</span> questions
+              Showing{" "}
+              <span className="font-semibold text-slate-900">{filteredQuestions.length}</span> of{" "}
+              <span className="font-semibold text-slate-900">{questions.length}</span> total questions
             </p>
           </div>
         )}
